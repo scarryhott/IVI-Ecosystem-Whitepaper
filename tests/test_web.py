@@ -26,4 +26,3 @@ def test_evaluate_endpoint():
     res = client.post("/evaluate", data={"idea_id": "x", "content": "ok"})
     assert res.status_code == 200
     assert "score" in res.json()
-
