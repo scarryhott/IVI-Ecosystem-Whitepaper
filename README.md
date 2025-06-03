@@ -106,6 +106,21 @@ points to a service account JSON file, the dashboard will use Firebase for login
 and store interactions in Firestore.
 
 
+## Real-Time Dashboard
+
+The optional `ivi.web` module exposes a FastAPI application that stores
+interactions in an SQLite database and streams updates via WebSocket.
+Launch the server with:
+
+```bash
+uvicorn ivi.web:app --reload
+```
+
+Then visit `/dashboard` to log in with a Firebase ID token and submit
+interactions. If `firebase-admin` is installed and the environment variable
+`FIREBASE_CRED` points to a service account JSON file, the dashboard verifies
+tokens and records interactions in Firestore.
+
 ## Contributing
 
 Contributions are welcome! Please see [CONTRIBUTIONS.md](CONTRIBUTIONS.md) for guidelines.

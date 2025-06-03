@@ -58,6 +58,10 @@ __all__ = [
     "User",
     "Interaction",
     "create_db",
+    "init_firebase",
+    "verify_token",
+    "save_interaction",
+
 
     "init_firebase",
     "verify_token",

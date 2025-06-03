@@ -19,6 +19,9 @@ web = [
     "uvicorn",
     "sqlalchemy",
 ]
+firebase = [
+    "firebase-admin",
+]
 
 firebase = [
     "firebase-admin",
