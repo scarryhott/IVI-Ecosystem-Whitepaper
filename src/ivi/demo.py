@@ -47,9 +47,8 @@ def main() -> None:
 
     # Contextual metrics
     sem_score = semantic_provenance("hello world", ["hello", "world news"])
-    temp_weight = temporal_layering(
-        datetime.now(timezone.utc), datetime.now(timezone.utc)
-    )
+    now = datetime.now(timezone.utc)
+    temp_weight = temporal_layering(now, now)
     print("Semantic Provenance:", sem_score)
     print("Temporal Weight:", temp_weight)
 
