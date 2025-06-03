@@ -19,6 +19,9 @@ web = [
     "uvicorn",
     "sqlalchemy",
 ]
+firebase = [
+    "firebase-admin",
+]
 
 [tool.pytest.ini_options]
 python_files = ["test_*.py"]
