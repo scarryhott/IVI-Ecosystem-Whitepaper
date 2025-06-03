@@ -16,13 +16,14 @@ def test_dashboard_page():
 
 def test_login_stub():
     client = TestClient(app)
-    res = client.post("/login", data={"id_token": "invalid"})
+    # Send as JSON instead of form data
+    res = client.post("/login", json={"id_token": "test_token"})
     assert res.status_code == 200
-    assert "status" in res.json()
-
+    assert "token" in res.json()
 
 def test_evaluate_endpoint():
     client = TestClient(app)
-    res = client.post("/evaluate", data={"idea_id": "x", "content": "ok"})
+    # Send as JSON instead of form data
+    res = client.post("/evaluate", json={"idea_id": "x", "content": "ok"})
     assert res.status_code == 200
     assert "score" in res.json()
