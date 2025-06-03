@@ -44,6 +44,25 @@ Run the demo script to see the modules in action:
 python -m ivi.demo
 ```
 
+## SlearnMap and LearningNode
+
+`SlearnMap` organizes lessons as token-gated nodes. Each `LearningNode`
+defines a lesson and the IVI tokens required to unlock it. The
+`IVIEcosystem` automatically provisions a `SlearnMap` so you can attach
+nodes and track completion.
+
+Example usage:
+
+```python
+from ivi import IVIEcosystem, LearningNode
+
+eco = IVIEcosystem()
+eco.add_learning_node(LearningNode(node_id="intro", required_tokens=0))
+eco.add_interaction("idea", user="bob", tags=["note"], description="start")
+available = eco.learning_map.available_nodes("bob")  # ["intro"]
+eco.complete_lesson("bob", "intro")
+```
+
 ## Development
 
 To run the test suite:
