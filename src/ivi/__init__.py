@@ -11,6 +11,8 @@ from .philosophical_heuristics import (
     self_awareness_metric,
 )
 from .decentralized_scoring import Agent, ScoringSystem
+from .token import TokenLedger
+from .ecosystem import IVIEcosystem
 
 __all__ = [
     "IdeaTrace",
@@ -27,4 +29,6 @@ __all__ = [
     "self_awareness_metric",
     "Agent",
     "ScoringSystem",
+    "TokenLedger",
+    "IVIEcosystem",
 ]
