@@ -11,6 +11,10 @@ from .philosophical_heuristics import (
     self_awareness_metric,
 )
 from .decentralized_scoring import Agent, ScoringSystem
+<<<<<<< HEAD
+=======
+from .token import TokenLedger
+>>>>>>> temp-branch
 from .ecosystem import IVIEcosystem
 
 __all__ = [
@@ -28,5 +32,11 @@ __all__ = [
     "self_awareness_metric",
     "Agent",
     "ScoringSystem",
+<<<<<<< HEAD
     "IVIEcosystem",
 ]
+=======
+    "TokenLedger",
+    "IVIEcosystem",
+]
+>>>>>>> temp-branch
