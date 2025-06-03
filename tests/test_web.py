@@ -12,3 +12,18 @@ def test_dashboard_page():
     res = client.get("/dashboard")
     assert res.status_code == 200
     assert "<html" in res.text.lower()
+
+
+def test_login_stub():
+    client = TestClient(app)
+    res = client.post("/login", data={"id_token": "invalid"})
+    assert res.status_code == 200
+    assert "status" in res.json()
+
+
+def test_evaluate_endpoint():
+    client = TestClient(app)
+    res = client.post("/evaluate", data={"idea_id": "x", "content": "ok"})
+    assert res.status_code == 200
+    assert "score" in res.json()
+=======

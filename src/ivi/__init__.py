@@ -22,6 +22,19 @@ except Exception:  # pragma: no cover - optional dependency missing
     EventBus = None  # type: ignore
     User = Interaction = create_db = None  # type: ignore
 
+try:  # optional firebase integration
+    from .firebase_utils import init_firebase, verify_token, save_interaction
+except Exception:  # pragma: no cover - optional dependency missing
+    def init_firebase(*_args, **_kwargs):
+        return None
+
+    def verify_token(*_args, **_kwargs):
+        return None
+
+    def save_interaction(*_args, **_kwargs) -> None:
+        return None
+
+
 __all__ = [
     "IdeaTrace",
     "semantic_provenance",
@@ -45,4 +58,9 @@ __all__ = [
     "User",
     "Interaction",
     "create_db",
+
+    "init_firebase",
+    "verify_token",
+    "save_interaction",
+
 ]

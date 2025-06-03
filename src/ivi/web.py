@@ -3,6 +3,10 @@ from __future__ import annotations
 """Web server exposing real-time IVI updates via WebSocket."""
 
 import asyncio
+
+import os
+=======
+
 from fastapi import FastAPI, WebSocket
 from fastapi.responses import HTMLResponse
 from sqlalchemy.orm import Session
@@ -11,11 +15,17 @@ from .ecosystem import IVIEcosystem
 from .events import EventBus
 from .database import create_db, User, Interaction
 
+from .firebase_utils import init_firebase, verify_token, save_interaction
+=======
+
+
 app = FastAPI()
 bus = EventBus()
 SessionLocal = create_db()
 
 eco = IVIEcosystem()
+init_firebase(os.getenv("FIREBASE_CRED"))
+=======
 
 # Simple dashboard HTML
 DASHBOARD_HTML = """
@@ -42,6 +52,16 @@ ws.onmessage = (ev) => {
 async def dashboard() -> HTMLResponse:
     return HTMLResponse(DASHBOARD_HTML)
 
+
+@app.post("/login")
+async def login(id_token: str) -> dict:
+    """Verify Firebase ID token and return the user id if valid."""
+    uid = verify_token(id_token)
+    if uid is None:
+        return {"status": "error"}
+    return {"status": "ok", "user": uid}
+
+=======
 @app.post("/interactions")
 async def add_interaction(idea_id: str, user: str, description: str) -> dict:
     session: Session = SessionLocal()
@@ -54,11 +74,21 @@ async def add_interaction(idea_id: str, user: str, description: str) -> dict:
     session.add(interaction)
     session.commit()
     session.close()
+    save_interaction(user, idea_id, description)
+=======
 
     eco.add_interaction(idea_id, user=user, tags=["note"], description=description)
     await bus.publish("interaction", {"user": user, "idea_id": idea_id, "description": description})
     return {"status": "ok"}
 
+
+@app.post("/evaluate")
+async def evaluate(idea_id: str, content: str, user: str | None = None) -> dict:
+    """Evaluate content through IVI scoring agents."""
+    score = eco.evaluate_content(idea_id, content, user=user)
+    return {"score": score}
+
+=======
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket) -> None:
     await websocket.accept()
