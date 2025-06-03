@@ -5,7 +5,6 @@ from __future__ import annotations
 import asyncio
 
 import os
-=======
 
 from fastapi import FastAPI, WebSocket
 from fastapi.responses import HTMLResponse
@@ -16,7 +15,7 @@ from .events import EventBus
 from .database import create_db, User, Interaction
 
 from .firebase_utils import init_firebase, verify_token, save_interaction
-=======
+
 
 
 app = FastAPI()
@@ -25,7 +24,7 @@ SessionLocal = create_db()
 
 eco = IVIEcosystem()
 init_firebase(os.getenv("FIREBASE_CRED"))
-=======
+
 
 # Simple dashboard HTML
 DASHBOARD_HTML = """
@@ -61,7 +60,7 @@ async def login(id_token: str) -> dict:
         return {"status": "error"}
     return {"status": "ok", "user": uid}
 
-=======
+
 @app.post("/interactions")
 async def add_interaction(idea_id: str, user: str, description: str) -> dict:
     session: Session = SessionLocal()
@@ -75,7 +74,7 @@ async def add_interaction(idea_id: str, user: str, description: str) -> dict:
     session.commit()
     session.close()
     save_interaction(user, idea_id, description)
-=======
+
 
     eco.add_interaction(idea_id, user=user, tags=["note"], description=description)
     await bus.publish("interaction", {"user": user, "idea_id": idea_id, "description": description})
@@ -88,7 +87,7 @@ async def evaluate(idea_id: str, content: str, user: str | None = None) -> dict:
     score = eco.evaluate_content(idea_id, content, user=user)
     return {"score": score}
 
-=======
+
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket) -> None:
     await websocket.accept()
