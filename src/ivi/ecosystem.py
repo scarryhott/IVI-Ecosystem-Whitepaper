@@ -9,6 +9,7 @@ from .belief_alignment import BeliefNode, score_alignment
 from .social_verification import ReputationTrail
 from .traceability import IdeaTrace
 from .usefulness import UsefulnessRecord
+from .decentralized_scoring import Agent, ScoringSystem
 
 
 @dataclass
@@ -19,6 +20,12 @@ class IVIEcosystem:
     traces: Dict[str, IdeaTrace] = field(default_factory=dict)
     usefulness: Dict[str, UsefulnessRecord] = field(default_factory=dict)
     reputation: Dict[str, ReputationTrail] = field(default_factory=dict)
+    scoring: Dict[str, ScoringSystem] = field(default_factory=dict)
+
+    impact_weight: float = 0.4
+    trust_weight: float = 0.4
+    alignment_weight: float = 0.2
+    content_weight: float = 0.0
 
     def add_interaction(
         self, idea_id: str, user: str, tags: List[str], description: str
@@ -36,11 +43,24 @@ class IVIEcosystem:
         rep = self.reputation.setdefault(idea_id, ReputationTrail(item_id=idea_id))
         rep.add_event(actor=user, description=description)
 
+    def add_scoring_agent(self, idea_id: str, agent: Agent) -> None:
+        """Attach a scoring agent to the given idea."""
+        system = self.scoring.setdefault(idea_id, ScoringSystem(item_id=idea_id))
+        system.agents.append(agent)
+
+    def evaluate_content(self, idea_id: str, content: str) -> float:
+        """Evaluate content via the idea's scoring agents."""
+        system = self.scoring.get(idea_id)
+        if not system:
+            return 0.0
+        return system.run_agents(content)
+
     def overall_score(self, idea_id: str) -> float:
         """Compute an aggregate score for an idea."""
         trace = self.traces.get(idea_id)
         record = self.usefulness.get(idea_id)
         rep = self.reputation.get(idea_id)
+        scoring = self.scoring.get(idea_id)
 
         if not trace or not record or not rep:
             return 0.0
@@ -50,8 +70,13 @@ class IVIEcosystem:
             tags = [fb.tag for fb in record.feedback]
             alignment = score_alignment(tags, self.belief_tree)
 
+        content_score = (
+            scoring.score_history[-1] if scoring and scoring.score_history else 0.0
+        )
+
         return (
-            0.4 * record.impact_score()
-            + 0.4 * rep.trust_score()
-            + 0.2 * alignment
+            self.impact_weight * record.impact_score()
+            + self.trust_weight * rep.trust_score()
+            + self.alignment_weight * alignment
+            + self.content_weight * content_score
         )
