@@ -1,6 +1,6 @@
 """Simple demonstration of IVI modules."""
 
-from datetime import datetime
+from datetime import datetime, timezone
 
 from . import (
     Agent,
@@ -47,7 +47,9 @@ def main() -> None:
 
     # Contextual metrics
     sem_score = semantic_provenance("hello world", ["hello", "world news"])
-    temp_weight = temporal_layering(datetime.utcnow(), datetime.utcnow())
+    temp_weight = temporal_layering(
+        datetime.now(timezone.utc), datetime.now(timezone.utc)
+    )
     print("Semantic Provenance:", sem_score)
     print("Temporal Weight:", temp_weight)
 
