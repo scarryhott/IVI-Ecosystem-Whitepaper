@@ -1,6 +1,6 @@
-from __future__ import annotations
-
 """High level integration utilities for the IVI ecosystem."""
+
+from __future__ import annotations
 
 from dataclasses import dataclass, field
 from typing import Dict, List

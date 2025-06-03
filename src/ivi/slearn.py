@@ -1,6 +1,6 @@
-from __future__ import annotations
-
 """Simple Slearn education map built on IVI tokens."""
+
+from __future__ import annotations
 
 from dataclasses import dataclass, field
 from typing import Dict, List
