@@ -15,6 +15,13 @@ from .token import TokenLedger
 from .slearn import SlearnMap, LearningNode
 from .ecosystem import IVIEcosystem
 
+try:  # optional real-time features
+    from .events import EventBus
+    from .database import User, Interaction, create_db
+except Exception:  # pragma: no cover - optional dependency missing
+    EventBus = None  # type: ignore
+    User = Interaction = create_db = None  # type: ignore
+
 __all__ = [
     "IdeaTrace",
     "semantic_provenance",
@@ -34,4 +41,8 @@ __all__ = [
     "SlearnMap",
     "LearningNode",
     "IVIEcosystem",
+    "EventBus",
+    "User",
+    "Interaction",
+    "create_db",
 ]

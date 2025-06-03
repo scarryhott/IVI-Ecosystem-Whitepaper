@@ -90,6 +90,18 @@ pytest
 └── README.md                   # This file
 ```
 
+## Real-Time Dashboard
+
+The optional `ivi.web` module exposes a FastAPI application that stores
+interactions in an SQLite database and streams updates via WebSocket.
+Launch the server with:
+
+```bash
+uvicorn ivi.web:app --reload
+```
+
+Then visit `/dashboard` to see a live feed of interactions.
+
 ## Contributing
 
 Contributions are welcome! Please see [CONTRIBUTIONS.md](CONTRIBUTIONS.md) for guidelines.
