@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ivi"
+version = "0.1.0"
+requires-python = ">=3.8"
+description = "A Framework for a Self-Governing, Self-Expanding, Meaning-Driven Intelligence & Community Ecosystem"
+authors = [
+    {name = "IVI Team"}
+]
+license = {text = "MIT"}
+
+[project.optional-dependencies]
+test = ["pytest"]
+
+[tool.pytest.ini_options]
+python_files = ["test_*.py"]
+testpaths = ["tests"]

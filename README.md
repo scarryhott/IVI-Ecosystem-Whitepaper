@@ -1,2 +1,80 @@
-# IVI-Ecosystem-Whitepaper
-A Framework for a Self-Governing, Self-Expanding, Meaning-Driven Intelligence &amp; Community Ecosystem
+# IVI Ecosystem
+
+A Framework for a Self-Governing, Self-Expanding, Meaning-Driven Intelligence & Community Ecosystem.
+
+[![Python Version](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+## Overview
+
+This repository contains a Python implementation of **Intangibly Verified Information (IVI)** concepts. The `src/ivi` package provides utility modules demonstrating:
+
+- **Contextual Traceability**: Track the origin and evolution of ideas
+- **Usefulness Verification**: Measure the impact and utility of information
+- **Belief Alignment**: Align information with belief systems
+- **Social Verification**: Establish trust through community validation
+- **Structural Redundancy**: Ensure robustness through pattern repetition
+- **Philosophical Heuristics**: Apply philosophical principles to information verification
+- **Decentralized Scoring**: Enable distributed, AI-assisted scoring mechanisms
+
+## Installation
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/scarryhott/IVI-Ecosystem-Whitepaper.git
+   cd IVI-Ecosystem-Whitepaper
+   ```
+
+2. Create and activate a virtual environment (recommended):
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # On Windows use `venv\Scripts\activate`
+   ```
+
+3. Install the package in development mode:
+   ```bash
+   pip install -e .[test]
+   ```
+
+## Quick Start
+
+Run the demo script to see the modules in action:
+
+```bash
+python -m ivi.demo
+```
+
+## Development
+
+To run the test suite:
+
+```bash
+pytest
+```
+
+## Project Structure
+
+```
+.
+├── src/
+│   └── ivi/                    # Main package
+│       ├── __init__.py         # Package exports
+│       ├── traceability.py     # Idea tracing and provenance
+│       ├── usefulness.py       # Usefulness verification
+│       ├── belief_alignment.py # Belief system integration
+│       ├── social_verification.py # Community validation
+│       ├── redundancy.py       # Pattern integrity
+│       ├── philosophical_heuristics.py # Philosophical metrics
+│       └── decentralized_scoring.py # Distributed scoring
+├── tests/                      # Test suite
+├── pyproject.toml              # Project metadata and dependencies
+└── README.md                   # This file
+```
+
+## Contributing
+
+Contributions are welcome! Please see [CONTRIBUTIONS.md](CONTRIBUTIONS.md) for guidelines.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
