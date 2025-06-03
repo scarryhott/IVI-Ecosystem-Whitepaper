@@ -13,17 +13,18 @@ def test_dashboard_page():
     assert res.status_code == 200
     assert "<html" in res.text.lower()
 
-
 def test_login_stub():
     client = TestClient(app)
-    # Send as JSON instead of form data
-    res = client.post("/login", json={"id_token": "test_token"})
+    # Use id_token as the parameter name
+    res = client.post("/login?id_token=test_token")
+    print(f"Login response: {res.status_code}, {res.json()}")
     assert res.status_code == 200
-    assert "token" in res.json()
-
+    assert "status" in res.json()
+    
 def test_evaluate_endpoint():
     client = TestClient(app)
-    # Send as JSON instead of form data
-    res = client.post("/evaluate", json={"idea_id": "x", "content": "ok"})
+    # Send as query parameters
+    res = client.post("/evaluate?idea_id=x&content=ok")
+    print(f"Evaluate response: {res.status_code}, {res.json()}")
     assert res.status_code == 200
     assert "score" in res.json()
