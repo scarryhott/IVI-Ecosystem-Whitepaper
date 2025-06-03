@@ -12,6 +12,7 @@ from .philosophical_heuristics import (
 )
 from .decentralized_scoring import Agent, ScoringSystem
 from .token import TokenLedger
+from .slearn import SlearnMap, LearningNode
 from .ecosystem import IVIEcosystem
 
 __all__ = [
@@ -30,5 +31,7 @@ __all__ = [
     "Agent",
     "ScoringSystem",
     "TokenLedger",
+    "SlearnMap",
+    "LearningNode",
     "IVIEcosystem",
 ]
