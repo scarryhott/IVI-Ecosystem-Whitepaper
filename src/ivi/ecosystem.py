@@ -1,8 +1,3 @@
-
-New
-+100
--0
-
 from __future__ import annotations
 
 """High level integration utilities for the IVI ecosystem."""
@@ -16,6 +11,7 @@ from .traceability import IdeaTrace
 from .usefulness import UsefulnessRecord
 from .decentralized_scoring import Agent, ScoringSystem
 from .token import TokenLedger
+from .slearn import SlearnMap, LearningNode
 
 
 @dataclass
@@ -28,12 +24,19 @@ class IVIEcosystem:
     reputation: Dict[str, ReputationTrail] = field(default_factory=dict)
     scoring: Dict[str, ScoringSystem] = field(default_factory=dict)
     ledger: TokenLedger = field(default_factory=TokenLedger)
+    learning_map: SlearnMap | None = None
     last_scores: Dict[str, float] = field(default_factory=dict)
 
     impact_weight: float = 0.4
     trust_weight: float = 0.4
     alignment_weight: float = 0.2
     content_weight: float = 0.0
+
+    def __post_init__(self) -> None:
+        if self.learning_map is None:
+            self.learning_map = SlearnMap(ledger=self.ledger)
+        else:
+            self.learning_map.ledger = self.ledger
 
     def add_interaction(
         self, idea_id: str, user: str, tags: List[str], description: str
@@ -103,3 +106,9 @@ class IVIEcosystem:
             + self.alignment_weight * alignment
             + self.content_weight * content_score
         )
+
+    def add_learning_node(self, node: LearningNode) -> None:
+        self.learning_map.add_node(node)
+
+    def complete_lesson(self, user: str, node_id: str) -> bool:
+        return self.learning_map.complete_node(user, node_id)
