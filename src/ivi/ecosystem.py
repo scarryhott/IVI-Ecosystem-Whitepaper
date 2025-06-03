@@ -1,3 +1,8 @@
+
+New
++100
+-0
+
 from __future__ import annotations
 
 """High level integration utilities for the IVI ecosystem."""
@@ -9,11 +14,8 @@ from .belief_alignment import BeliefNode, score_alignment
 from .social_verification import ReputationTrail
 from .traceability import IdeaTrace
 from .usefulness import UsefulnessRecord
-<<<<<<< HEAD
-=======
 from .decentralized_scoring import Agent, ScoringSystem
 from .token import TokenLedger
->>>>>>> temp-branch
 
 
 @dataclass
@@ -24,8 +26,6 @@ class IVIEcosystem:
     traces: Dict[str, IdeaTrace] = field(default_factory=dict)
     usefulness: Dict[str, UsefulnessRecord] = field(default_factory=dict)
     reputation: Dict[str, ReputationTrail] = field(default_factory=dict)
-<<<<<<< HEAD
-=======
     scoring: Dict[str, ScoringSystem] = field(default_factory=dict)
     ledger: TokenLedger = field(default_factory=TokenLedger)
     last_scores: Dict[str, float] = field(default_factory=dict)
@@ -34,7 +34,6 @@ class IVIEcosystem:
     trust_weight: float = 0.4
     alignment_weight: float = 0.2
     content_weight: float = 0.0
->>>>>>> temp-branch
 
     def add_interaction(
         self, idea_id: str, user: str, tags: List[str], description: str
@@ -52,8 +51,6 @@ class IVIEcosystem:
         rep = self.reputation.setdefault(idea_id, ReputationTrail(item_id=idea_id))
         rep.add_event(actor=user, description=description)
 
-<<<<<<< HEAD
-=======
         prev = self.last_scores.get(idea_id, 0.0)
         new = self.overall_score(idea_id)
         delta = new - prev
@@ -81,16 +78,12 @@ class IVIEcosystem:
         self.last_scores[idea_id] = new
         return result
 
->>>>>>> temp-branch
     def overall_score(self, idea_id: str) -> float:
         """Compute an aggregate score for an idea."""
         trace = self.traces.get(idea_id)
         record = self.usefulness.get(idea_id)
         rep = self.reputation.get(idea_id)
-<<<<<<< HEAD
-=======
         scoring = self.scoring.get(idea_id)
->>>>>>> temp-branch
 
         if not trace or not record or not rep:
             return 0.0
@@ -100,13 +93,6 @@ class IVIEcosystem:
             tags = [fb.tag for fb in record.feedback]
             alignment = score_alignment(tags, self.belief_tree)
 
-<<<<<<< HEAD
-        return (
-            0.4 * record.impact_score()
-            + 0.4 * rep.trust_score()
-            + 0.2 * alignment
-        )
-=======
         content_score = (
             scoring.score_history[-1] if scoring and scoring.score_history else 0.0
         )
@@ -117,4 +103,3 @@ class IVIEcosystem:
             + self.alignment_weight * alignment
             + self.content_weight * content_score
         )
->>>>>>> temp-branch
