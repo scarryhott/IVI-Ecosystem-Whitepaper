@@ -34,6 +34,7 @@ except Exception:  # pragma: no cover - optional dependency missing
     def save_interaction(*_args, **_kwargs) -> None:
         return None
 
+
 __all__ = [
     "IdeaTrace",
     "semantic_provenance",
@@ -60,4 +61,10 @@ __all__ = [
     "init_firebase",
     "verify_token",
     "save_interaction",
+
+
+    "init_firebase",
+    "verify_token",
+    "save_interaction",
+
 ]
