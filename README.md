@@ -99,11 +99,10 @@ Launch the server with:
 uvicorn ivi.web:app --reload
 ```
 
-Then visit `/dashboard` to see a live feed of interactions.
-
-If `firebase-admin` is installed and the environment variable `FIREBASE_CRED`
-points to a service account JSON file, the dashboard will use Firebase for login
-and store interactions in Firestore.
+Then visit `/dashboard` to log in with a Firebase ID token and submit
+interactions. If `firebase-admin` is installed and the environment variable
+`FIREBASE_CRED` points to a service account JSON file, the dashboard verifies
+tokens and records interactions in Firestore.
 
 
 ## Contributing

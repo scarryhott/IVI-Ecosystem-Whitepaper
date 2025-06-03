@@ -26,4 +26,14 @@ def test_evaluate_endpoint():
     res = client.post("/evaluate", data={"idea_id": "x", "content": "ok"})
     assert res.status_code == 200
     assert "score" in res.json()
+
+
+def test_interactions_endpoint():
+    client = TestClient(app)
+    res = client.post(
+        "/interactions",
+        data={"idea_id": "x", "user": "bob", "description": "note"},
+    )
+    assert res.status_code == 200
+    assert res.json()["status"] == "ok"
 =======

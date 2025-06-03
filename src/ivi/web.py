@@ -4,6 +4,49 @@ from __future__ import annotations
 
 import asyncio
 
+<div>
+  <label>Firebase ID Token <input id="token" size="50" /></label>
+  <button onclick="login()">Login</button>
+</div>
+<div style="margin-top:1em;">
+  <label>Idea <input id="idea" /></label>
+  <label>Description <input id="desc" /></label>
+  <button onclick="sendInteraction()">Add Interaction</button>
+</div>
+<div style="margin-top:1em;">
+  <label>Content <input id="content" size="60" /></label>
+  <button onclick="evaluate()">Evaluate</button>
+</div>
+let user = null;
+async function login() {
+  const token = document.getElementById('token').value;
+  const res = await fetch('/login', {
+    method: 'POST',
+    body: new URLSearchParams({id_token: token})
+  });
+  const data = await res.json();
+  if (data.user) user = data.user;
+}
+async function sendInteraction() {
+  if (!user) return alert('login first');
+  const idea = document.getElementById('idea').value;
+  const desc = document.getElementById('desc').value;
+  await fetch('/interactions', {
+    method: 'POST',
+    body: new URLSearchParams({idea_id: idea, user: user, description: desc})
+  });
+}
+async function evaluate() {
+  if (!user) return alert('login first');
+  const idea = document.getElementById('idea').value;
+  const content = document.getElementById('content').value;
+  const res = await fetch('/evaluate', {
+    method: 'POST',
+    body: new URLSearchParams({idea_id: idea, content: content, user: user})
+  });
+  const data = await res.json();
+  alert('score: ' + data.score);
+}
 import os
 =======
 
