@@ -25,6 +25,7 @@ SessionLocal = create_db()
 eco = IVIEcosystem()
 init_firebase(os.getenv("FIREBASE_CRED"))
 
+DASHBOARD_HTML = """
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -492,6 +493,7 @@ init_firebase(os.getenv("FIREBASE_CRED"))
     </script>
 </body>
 </html>
+"""
 
 @app.get("/dashboard")
 async def dashboard() -> HTMLResponse:
