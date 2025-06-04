@@ -18,8 +18,6 @@ __all__ = [
     "save_evaluation",
 ]
 
-__all__ = ["init_firebase", "verify_token", "save_interaction"]
-
 _app: firebase_admin.App | None = None
 
 
@@ -51,8 +49,6 @@ def verify_token(id_token: str) -> str | None:
 def save_interaction(
     user: str, idea_id: str, description: str, score: float | None = None, balance: float | None = None
 ) -> None:
-
-def save_interaction(user: str, idea_id: str, description: str) -> None:
     """Store interaction data in Firestore if available."""
     if firebase_admin is None or _app is None:
         return
@@ -82,9 +78,3 @@ def save_evaluation(user: str, idea_id: str, score: float, content: str) -> None
             "score": score,
         }
     )
-    db.collection("interactions").add({
-        "user": user,
-        "idea_id": idea_id,
-        "description": description,
-    })
-

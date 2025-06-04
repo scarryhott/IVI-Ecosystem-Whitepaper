@@ -29,8 +29,6 @@ try:  # optional firebase integration
         save_interaction,
         save_evaluation,
     )
-
-    from .firebase_utils import init_firebase, verify_token, save_interaction
 except Exception:  # pragma: no cover - optional dependency missing
     def init_firebase(*_args, **_kwargs):
         return None
@@ -43,7 +41,6 @@ except Exception:  # pragma: no cover - optional dependency missing
 
     def save_evaluation(*_args, **_kwargs) -> None:
         return None
-
 
 __all__ = [
     "IdeaTrace",
@@ -72,11 +69,4 @@ __all__ = [
     "verify_token",
     "save_interaction",
     "save_evaluation",
-
-
-
-    "init_firebase",
-    "verify_token",
-    "save_interaction",
-
 ]
