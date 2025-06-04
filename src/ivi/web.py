@@ -133,6 +133,20 @@ DASHBOARD_HTML = """
                         </ul>
                     </div>
                 </div>
+
+                <!-- Marketplace -->
+                <div class="mt-8 bg-white p-6 rounded-lg shadow" id="marketplace">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-lg font-medium text-gray-900">Marketplace</h2>
+                        <button id="create-product" class="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700">+ Create Product</button>
+                    </div>
+                    <div id="marketplace-list" class="space-y-4">
+                        <div class="border p-4 rounded">
+                            <h3 class="font-semibold">Flow State Toolkit</h3>
+                            <p class="text-sm text-gray-600">Requires Token: focus</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </main>
     </div>
@@ -170,6 +184,7 @@ DASHBOARD_HTML = """
         const scoreElement = document.getElementById('score');
         const interactionsList = document.getElementById('interactions-list');
         const interactionCount = document.getElementById('interaction-count');
+        const createProductButton = document.getElementById('create-product');
         const firebaseUiContainer = document.getElementById('firebaseui-auth-container');
 
         // WebSocket connection
@@ -461,6 +476,9 @@ DASHBOARD_HTML = """
 
         interactionForm.addEventListener('submit', handleInteractionSubmit);
         evaluateForm.addEventListener('submit', handleEvaluateSubmit);
+        createProductButton?.addEventListener('click', () => {
+            alert('Creation flow not implemented in this demo.');
+        });
 
         // Auth state changes
         auth.onAuthStateChanged((user) => {

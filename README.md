@@ -115,40 +115,9 @@ and store interactions in Firestore.
   contributions and interactions.
 - **Marketplace:** Facilitates trading and collaboration based on reputation and
   token holdings.
+- **Marketplace Creation:** Launch products using the AI-assisted creation flow.
 
 
-## Real-Time Dashboard
-
-The optional `ivi.web` module exposes a FastAPI application that stores
-interactions in an SQLite database and streams updates via WebSocket.
-Launch the server with:
-
-```bash
-uvicorn ivi.web:app --reload
-```
-
-Then visit `/dashboard` to log in with a Firebase ID token and submit
-interactions. If `firebase-admin` is installed and the environment variable
-`FIREBASE_CRED` points to a service account JSON file, the dashboard verifies
-tokens and records interactions in Firestore.
-
-## Real-Time Dashboard
-
-The optional `ivi.web` module exposes a FastAPI application that stores
-interactions in an SQLite database and streams updates via WebSocket.
-Launch the server with:
-
-```bash
-uvicorn ivi.web:app --reload
-```
-
-Then visit `/dashboard` to log in with a Firebase ID token and submit
-interactions. If `firebase-admin` is installed and the environment variable
-`FIREBASE_CRED` points to a service account JSON file, the dashboard verifies
-tokens and records interactions in Firestore. Interactions are processed through
-the IVI ecosystem, so the resulting score and the user's token balance are
-stored alongside the description. Evaluation requests are also saved to an
-`evaluations` collection.
 
 ## Marketplace and Creation Flow
 
