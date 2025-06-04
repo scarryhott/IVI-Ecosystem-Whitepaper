@@ -150,6 +150,34 @@ the IVI ecosystem, so the resulting score and the user's token balance are
 stored alongside the description. Evaluation requests are also saved to an
 `evaluations` collection.
 
+## Marketplace and Creation Flow
+
+The `ivi.marketplace` module introduces a simple in-memory marketplace for
+tokenized products. You can register new products and retrieve them later. The
+`CreationFlow` helper connects the marketplace with the `IVIEcosystem` so newly
+created products are automatically traced and scored.
+
+Example usage:
+
+```python
+from ivi import IVIEcosystem, Marketplace, CreationFlow
+
+eco = IVIEcosystem()
+market = Marketplace()
+flow = CreationFlow(marketplace=market, eco=eco)
+
+flow.create_product(
+    product_id="tool1",
+    creator="alice",
+    name="Flow State Toolkit",
+    description="Unlock better focus",
+    required_tokens=1,
+    belief_tag="focus",
+)
+
+print(market.list_products())
+```
+
 ## Real-Time Dashboard
 
 The optional `ivi.web` module exposes a FastAPI application that stores

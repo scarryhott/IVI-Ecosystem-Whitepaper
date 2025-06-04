@@ -14,6 +14,7 @@ from .decentralized_scoring import Agent, ScoringSystem
 from .token import TokenLedger
 from .slearn import SlearnMap, LearningNode
 from .ecosystem import IVIEcosystem
+from .marketplace import Product, Marketplace, CreationFlow
 
 try:  # optional real-time features
     from .events import EventBus
@@ -69,4 +70,7 @@ __all__ = [
     "verify_token",
     "save_interaction",
     "save_evaluation",
+    "Product",
+    "Marketplace",
+    "CreationFlow",
 ]
