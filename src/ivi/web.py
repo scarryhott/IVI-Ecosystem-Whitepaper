@@ -17,6 +17,7 @@ from .firebase_utils import (
     save_interaction,
     save_evaluation,
 )
+from .marketplace import Marketplace, CreationFlow, Product
 
 app = FastAPI()
 bus = EventBus()
@@ -24,6 +25,8 @@ SessionLocal = create_db()
 
 eco = IVIEcosystem()
 init_firebase(os.getenv("FIREBASE_CRED"))
+marketplace = Marketplace()
+creation_flow = CreationFlow(marketplace=marketplace, eco=eco)
 
 DASHBOARD_HTML = """
 <!DOCTYPE html>
@@ -57,6 +60,7 @@ DASHBOARD_HTML = """
                     <button id="login-button" class="ml-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Login</button>
                     <div id="user-info" class="hidden ml-4">
                         <span id="user-email" class="text-sm font-medium text-gray-700"></span>
+                        <span id="token-balance" class="ml-2 text-sm text-green-700"></span>
                         <button id="logout-button" class="ml-2 text-sm text-blue-600 hover:text-blue-800">Logout</button>
                     </div>
                 </div>
@@ -133,6 +137,20 @@ DASHBOARD_HTML = """
                         </ul>
                     </div>
                 </div>
+
+                <!-- Marketplace -->
+                <div class="mt-8 bg-white p-6 rounded-lg shadow" id="marketplace">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-lg font-medium text-gray-900">Marketplace</h2>
+                        <button id="create-product" class="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700">+ Create Product</button>
+                    </div>
+                    <div id="marketplace-list" class="space-y-4">
+                        <div class="border p-4 rounded">
+                            <h3 class="font-semibold">Flow State Toolkit</h3>
+                            <p class="text-sm text-gray-600">Requires Token: focus</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </main>
     </div>
@@ -162,6 +180,7 @@ DASHBOARD_HTML = """
         const dashboardContent = document.getElementById('dashboard-content');
         const userInfo = document.getElementById('user-info');
         const userEmail = document.getElementById('user-email');
+        const tokenBalance = document.getElementById('token-balance');
         const connectionStatus = document.getElementById('connection-status');
         const connectionText = document.getElementById('connection-text');
         const interactionForm = document.getElementById('interaction-form');
@@ -170,6 +189,7 @@ DASHBOARD_HTML = """
         const scoreElement = document.getElementById('score');
         const interactionsList = document.getElementById('interactions-list');
         const interactionCount = document.getElementById('interaction-count');
+        const createProductButton = document.getElementById('create-product');
         const firebaseUiContainer = document.getElementById('firebaseui-auth-container');
 
         // WebSocket connection
@@ -420,6 +440,69 @@ DASHBOARD_HTML = """
             }
         }
 
+        // Fetch and display marketplace products
+        async function loadMarketplace() {
+            try {
+                const res = await fetch('/products');
+                if (!res.ok) return;
+                const products = await res.json();
+                const list = document.getElementById('marketplace-list');
+                list.innerHTML = '';
+                products.forEach(p => {
+                    const div = document.createElement('div');
+                    div.className = 'border p-4 rounded';
+                    div.innerHTML = `
+                        <h3 class="font-semibold">${p.name}</h3>
+                        <p class="text-sm text-gray-600">Requires Token: ${p.belief_tag || 'none'}</p>`;
+                    list.appendChild(div);
+                });
+            } catch (e) {
+                console.error('Error loading marketplace', e);
+            }
+        }
+
+        // Simplified creation flow using prompts
+        async function handleCreateProduct() {
+            const productId = prompt('Product ID');
+            if (!productId) return;
+            const name = prompt('Name');
+            if (!name) return;
+            const description = prompt('Description') || '';
+            const requiredTokens = prompt('Required Tokens', '0') || '0';
+            const beliefTag = prompt('Belief Tag (optional)') || '';
+
+            const button = createProductButton;
+            const original = button.textContent;
+            try {
+                button.disabled = true;
+                button.textContent = 'Creating...';
+                const token = await auth.currentUser.getIdToken();
+                const res = await fetch('/products', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: new URLSearchParams({
+                        product_id: productId,
+                        creator: auth.currentUser.uid,
+                        name,
+                        description,
+                        required_tokens: requiredTokens,
+                        belief_tag: beliefTag
+                    })
+                });
+                if (!res.ok) throw new Error('Create failed');
+                await loadMarketplace();
+            } catch (err) {
+                console.error('Error creating product', err);
+                alert('Failed to create product');
+            } finally {
+                button.disabled = false;
+                button.textContent = original;
+            }
+        }
+
         // Handle login/logout
         function updateUI(user) {
             if (user) {
@@ -427,17 +510,27 @@ DASHBOARD_HTML = """
                 loginButton.classList.add('hidden');
                 userInfo.classList.remove('hidden');
                 userEmail.textContent = user.email;
+                fetch(`/profile?user=${user.uid}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        tokenBalance.textContent = `Tokens: ${data.balance}`;
+                    }).catch(() => {
+                        tokenBalance.textContent = '';
+                    });
                 loginForm.classList.add('hidden');
                 dashboardContent.classList.remove('hidden');
-                
-                // Connect to WebSocket
+
+                // Connect to WebSocket and load data
                 connectWebSocket();
+                loadMarketplace();
             } else {
                 // User is signed out
                 loginButton.classList.remove('hidden');
                 userInfo.classList.add('hidden');
                 loginForm.classList.remove('hidden');
                 dashboardContent.classList.add('hidden');
+                tokenBalance.textContent = '';
+                document.getElementById('marketplace-list').innerHTML = '';
                 
                 // Show Firebase UI
                 showFirebaseUI();
@@ -461,6 +554,7 @@ DASHBOARD_HTML = """
 
         interactionForm.addEventListener('submit', handleInteractionSubmit);
         evaluateForm.addEventListener('submit', handleEvaluateSubmit);
+        createProductButton?.addEventListener('click', handleCreateProduct);
 
         // Auth state changes
         auth.onAuthStateChanged((user) => {
@@ -500,7 +594,39 @@ async def dashboard() -> HTMLResponse:
     return HTMLResponse(DASHBOARD_HTML)
 
 
+@app.get("/profile")
+async def profile(user: str) -> dict:
+    """Return token balance for a user."""
+    return {"balance": eco.ledger.balance_of(user)}
+
+
+@app.get("/products")
+async def list_products() -> list[dict]:
+    return [p.__dict__ for p in marketplace.list_products()]
+
+
+@app.post("/products")
+async def create_product(
+    product_id: str,
+    creator: str,
+    name: str,
+    description: str,
+    required_tokens: int = 0,
+    belief_tag: str | None = None,
+) -> dict:
+    p = creation_flow.create_product(
+        product_id=product_id,
+        creator=creator,
+        name=name,
+        description=description,
+        required_tokens=int(required_tokens),
+        belief_tag=belief_tag or None,
+    )
+    return {"status": "ok", "product": p.__dict__}
+
+
 from fastapi import Request, Form
+from fastapi import HTTPException
 
 @app.post("/login")
 async def login(token: str = Form(...)):
