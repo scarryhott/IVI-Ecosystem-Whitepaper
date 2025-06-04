@@ -105,6 +105,17 @@ If `firebase-admin` is installed and the environment variable `FIREBASE_CRED`
 points to a service account JSON file, the dashboard will use Firebase for login
 and store interactions in Firestore.
 
+### Dashboard Features
+
+- **User Profile:** Displays individual reputation scores, belief alignment
+  metrics, and contribution history.
+- **AI Interaction:** Provides personalized guidance and feedback based on user
+  activity and ecosystem dynamics.
+- **Token Management:** Lets users manage the tokens earned through their
+  contributions and interactions.
+- **Marketplace:** Facilitates trading and collaboration based on reputation and
+  token holdings.
+
 
 ## Real-Time Dashboard
 
