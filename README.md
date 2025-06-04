@@ -115,32 +115,38 @@ and store interactions in Firestore.
   contributions and interactions.
 - **Marketplace:** Facilitates trading and collaboration based on reputation and
   token holdings.
+- **Marketplace Creation:** Launch products using the AI-assisted creation flow.
 
 
-## Real-Time Dashboard
 
-The optional `ivi.web` module exposes a FastAPI application that stores
-interactions in an SQLite database and streams updates via WebSocket.
-Launch the server with:
+## Marketplace and Creation Flow
 
-```bash
-uvicorn ivi.web:app --reload
+The `ivi.marketplace` module introduces a simple in-memory marketplace for
+tokenized products. You can register new products and retrieve them later. The
+`CreationFlow` helper connects the marketplace with the `IVIEcosystem` so newly
+created products are automatically traced and scored.
+
+Example usage:
+
+```python
+from ivi import IVIEcosystem, Marketplace, CreationFlow
+
+eco = IVIEcosystem()
+market = Marketplace()
+flow = CreationFlow(marketplace=market, eco=eco)
+
+flow.create_product(
+    product_id="tool1",
+    creator="alice",
+    name="Flow State Toolkit",
+    description="Unlock better focus",
+    required_tokens=1,
+    belief_tag="focus",
+)
+
+print(market.list_products())
 ```
 
-Then visit `/dashboard` to log in with a Firebase ID token and submit
-interactions. If `firebase-admin` is installed and the environment variable
-`FIREBASE_CRED` points to a service account JSON file, the dashboard verifies
-tokens and records interactions in Firestore.
-
-## Real-Time Dashboard
-
-The optional `ivi.web` module exposes a FastAPI application that stores
-interactions in an SQLite database and streams updates via WebSocket.
-Launch the server with:
-
-```bash
-uvicorn ivi.web:app --reload
-```
 
 Then visit `/dashboard` to log in with a Firebase ID token and submit
 interactions. If `firebase-admin` is installed and the environment variable
@@ -194,7 +200,9 @@ interactions. If `firebase-admin` is installed and the environment variable
 tokens and records interactions in Firestore. Interactions are processed through
 the IVI ecosystem, so the resulting score and the user's token balance are
 stored alongside the description. Evaluation requests are also saved to an
-`evaluations` collection.
+`evaluations` collection. The dashboard lists marketplace products via `/products`,
+shows your token balance from `/profile`, and lets you add new listings through
+an AI-assisted creation flow triggered by the **Create Product** button.
 
 ## Contributing
 
