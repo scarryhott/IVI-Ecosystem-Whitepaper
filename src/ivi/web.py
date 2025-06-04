@@ -504,32 +504,28 @@ from fastapi import Request, Form
 
 @app.post("/login")
 async def login(token: str = Form(...)):
+    """Authenticate a Firebase user and return a local user id."""
     try:
-        # Verify the Firebase ID token
-        decoded_token = verify_token(token)
-        if not decoded_token:
-            raise HTTPException(status_code=401, detail="Invalid authentication credentials")
-        
-        # Get the user's Firebase UID
-        uid = decoded_token.get('uid')
+        # Verify the Firebase ID token; returns the UID on success
+        uid = verify_token(token)
         if not uid:
-            raise HTTPException(status_code=401, detail="Invalid user ID in token")
-        
-        # Get or create the user in your database
+            raise HTTPException(status_code=401, detail="Invalid authentication credentials")
+
         db = SessionLocal()
         try:
+            # Look up the user by Firebase UID
             user = db.query(User).filter(User.firebase_uid == uid).first()
             if not user:
-                # Create new user if they don't exist
-                user = User(firebase_uid=uid, email=decoded_token.get('email', ''))
+                # Create a new user record if none exists
+                user = User(firebase_uid=uid)
                 db.add(user)
                 db.commit()
                 db.refresh(user)
-            
+
             return {"status": "success", "user_id": user.id}
         finally:
             db.close()
-            
+
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
