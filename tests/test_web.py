@@ -6,6 +6,8 @@ import asyncio
 import os
 from fastapi import FastAPI, WebSocket
 from fastapi.responses import HTMLResponse
+import pytest
+sqlalchemy = pytest.importorskip("sqlalchemy")
 from sqlalchemy.orm import Session
 
 from .ecosystem import IVIEcosystem
