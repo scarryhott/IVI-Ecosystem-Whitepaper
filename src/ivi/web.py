@@ -11,7 +11,12 @@ from sqlalchemy.orm import Session
 from .ecosystem import IVIEcosystem
 from .events import EventBus
 from .database import create_db, User, Interaction
-from .firebase_utils import init_firebase, verify_token, save_interaction
+from .firebase_utils import (
+    init_firebase,
+    verify_token,
+    save_interaction,
+    save_evaluation,
+)
 
 app = FastAPI()
 bus = EventBus()
@@ -109,7 +114,9 @@ async def add_interaction(idea_id: str, user: str, description: str) -> dict:
     session.add(interaction)
     session.commit()
     session.close()
-    save_interaction(user, idea_id, description)
+    score = eco.overall_score(idea_id)
+    balance = eco.ledger.balance_of(user)
+    save_interaction(user, idea_id, description, score=score, balance=balance)
 
     eco.add_interaction(idea_id, user=user, tags=["note"], description=description)
     await bus.publish("interaction", {"user": user, "idea_id": idea_id, "description": description})
@@ -120,6 +127,8 @@ async def add_interaction(idea_id: str, user: str, description: str) -> dict:
 async def evaluate(idea_id: str, content: str, user: str | None = None) -> dict:
     """Evaluate content through IVI scoring agents."""
     score = eco.evaluate_content(idea_id, content, user=user)
+    if user:
+        save_evaluation(user, idea_id, score, content)
     return {"score": score}
 
 @app.websocket("/ws")

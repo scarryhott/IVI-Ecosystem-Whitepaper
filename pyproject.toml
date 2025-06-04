@@ -23,9 +23,11 @@ firebase = [
     "firebase-admin",
 ]
 
+
 firebase = [
     "firebase-admin",
 ]
+
 
 
 [tool.pytest.ini_options]

@@ -11,6 +11,13 @@ except Exception:  # pragma: no cover - optional dependency missing
     firebase_admin = None
     credentials = auth = firestore = None  # type: ignore
 
+__all__ = [
+    "init_firebase",
+    "verify_token",
+    "save_interaction",
+    "save_evaluation",
+]
+
 __all__ = ["init_firebase", "verify_token", "save_interaction"]
 
 _app: firebase_admin.App | None = None
@@ -41,11 +48,40 @@ def verify_token(id_token: str) -> str | None:
         return None
 
 
+def save_interaction(
+    user: str, idea_id: str, description: str, score: float | None = None, balance: float | None = None
+) -> None:
+
 def save_interaction(user: str, idea_id: str, description: str) -> None:
     """Store interaction data in Firestore if available."""
     if firebase_admin is None or _app is None:
         return
     db = firestore.client()
+    data: dict[str, Any] = {
+        "user": user,
+        "idea_id": idea_id,
+        "description": description,
+    }
+    if score is not None:
+        data["score"] = score
+    if balance is not None:
+        data["balance"] = balance
+    db.collection("interactions").add(data)
+
+
+def save_evaluation(user: str, idea_id: str, score: float, content: str) -> None:
+    """Store evaluation results in Firestore if available."""
+    if firebase_admin is None or _app is None:
+        return
+    db = firestore.client()
+    db.collection("evaluations").add(
+        {
+            "user": user,
+            "idea_id": idea_id,
+            "content": content,
+            "score": score,
+        }
+    )
     db.collection("interactions").add({
         "user": user,
         "idea_id": idea_id,
