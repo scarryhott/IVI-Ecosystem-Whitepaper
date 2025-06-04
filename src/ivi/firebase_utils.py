@@ -78,4 +78,3 @@ def save_evaluation(user: str, idea_id: str, score: float, content: str) -> None
             "score": score,
         }
     )
-
